@@ -5,7 +5,7 @@
 	<groupId>com.mt</groupId>
 	<artifactId>maven-web-application</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	
 	<name>maven-web-application</name>
 
@@ -98,13 +98,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Releases Nexus Repository</name>
-	      <url>http://13.234.111.90:9080/hareeshvardineni/repository/wallmart-release/</url>
+	      <url>http://65.2.168.154:9080/hareeshvardineni/repository/walmart-release/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Snapshot Nexus Repository </name>
-	      <url>http://13.234.111.90:9080/hareeshvardineni/repository/wallmart-snapshot/</url>
+	      <url>http://65.2.168.154:9080/hareeshvardineni/repository/walmart-snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
