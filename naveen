@@ -27,7 +27,7 @@ sh "scp -o strictHostkeyChecking=no target/maven-web-application.war ec2-user@13
 }
 }
 }
-  } catch (e) {
+  catch (e) {
     // If there was an exception thrown, the build failed
     currentBuild.result = "FAILED"
     throw e
