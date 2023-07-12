@@ -9,7 +9,7 @@ echo "node name: ${env.NODE_NAME}"
     
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM(ignorePostCommitHooks: true, scmpoll_spec: '* * * * *')])])
  try {
-sendslacknotification("STARTED") 
+//sendslacknotification("STARTED") 
 stage('checkout code from git'){
 git branch: 'development', url: 'https://github.com/hareeshvardineni/maven-web-application.git'
 }
