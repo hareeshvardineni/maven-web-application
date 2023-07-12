@@ -1,6 +1,6 @@
 node{
     try {
-sendslacknotification('STARTED')  
+//sendslacknotification('STARTED')  
 def mavenhome = tool name: "apache-maven"
     
 echo "build number: ${env.BUILD_NUMBER}"
