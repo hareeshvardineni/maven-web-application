@@ -1,0 +1,64 @@
+node{
+    try {
+    
+def mavenhome = tool name: "apache-maven"
+    
+echo "build number: ${env.BUILD_NUMBER}"
+echo "job name: ${env.JOB_NAME}"
+echo "node name: ${env.NODE_NAME}"
+    
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM(ignorePostCommitHooks: true, scmpoll_spec: '* * * * *')])])
+
+stage('checkout code from git'){
+git branch: 'development', url: 'https://github.com/hareeshvardineni/maven-web-application.git'
+}
+stage('build'){
+sh "${mavenhome}/bin/mvn clean package"
+}
+stage('execute sonarqube report'){
+sh "${mavenhome}/bin/mvn sonar:sonar"
+}
+stage('deploy the artifact into nexus repository'){
+sh "${mavenhome}/bin/mvn deploy"
+}
+stage('deploy application into tomcat server'){
+sshagent(['d6ede68d-6c78-40a6-ab55-5ad876e17fa2']){
+sh "scp -o strictHostkeyChecking=no target/maven-web-application.war ec2-user@13.126.209.186:/opt/apache-tomcat-9.0.76/webapps/"
+}
+}
+}
+  } catch (e) {
+    // If there was an exception thrown, the build failed
+    currentBuild.result = "FAILED"
+    throw e
+  } finally {
+    // Success or failure, always send notifications
+    notifyBuild(currentBuild.result)
+  }
+}
+
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESSFUL') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary)
+}
